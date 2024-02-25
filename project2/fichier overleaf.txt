@@ -1,0 +1,240 @@
+\documentclass[12pt,titlepage]{article}
+
+\usepackage{float}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel} 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{lipsum}
+\usepackage{ragged2e}
+\usepackage{eurosym}
+\usepackage{indentfirst}
+\usepackage{minted}
+\usepackage{titlesec}
+\usepackage{pifont}
+\usepackage{url}
+\usepackage{epsf}
+\usepackage{blindtext}
+\usepackage{biblatex}
+\addbibresource{sources.bib}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=30mm,
+ top=20mm,
+ }
+
+
+\usepackage{setspace}
+\onehalfspacing % Espacement de 1.5
+
+
+
+\usepackage{fancyhdr}
+\graphicspath {  { figures/ }  } 
+\usepackage { array }
+
+
+
+\begin{document}
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\center
+\textsc{\LARGE
+Université IBN KHALDOUN -TIARET-\\
+} \\[1.5cm]
+\includegraphics[widtch=2cm]{kk.jpg} 
+\HRule \\[0.4cm]
+{ \huge \bfseries TP 03 : Clignotement d'une LED en utilisant boutons-poussoirs via le logiciel ARM Keil\\[0.15cm] }
+\HRule \\[2cm]
+\textbf{réalisé par:\\}
+DOUKH Mohamed Malek\\HASSOUNE Amira Ghozlane\\ CHAABI Abdrrezak\\Hammouda Abdelillah\\
+
+\textbf{specialité:\\}
+M1 ELNSE
+\end{titlepage}
+
+
+\newpage
+\tableofcontents
+
+
+\newpage
+\thispagestyle { vide } 
+\listoffigures
+\newpage
+
+
+
+\pagestyle{fancy}\lhead{\textbf \small\it{Clignotement d'une LED en utilisant boutons-poussoirs}}
+\pagestyle{fancy}\chead{} \pagestyle{fancy}\rhead{\small\it {Dr. MAAMAR NOUREDDINE}}
+
+\pagestyle{fancy}\cfoot{} \pagestyle{fancy}\rfoot{\thepage}
+
+\section{Introduction:}
+Dans le domaine de l'électronique embarquée et de la programmation microcontrôleur, la commande de composants simples tels que les LEDs à l'aide de microcontrôleurs est une étape fondamentale. Dans ce rapport, nous explorons le processus de Le clignotement d'une LED en utilisant des boutons-poussoirs est l'un des projets les plus élémentaires et instructifs dans le domaine de l'embarqué. Il offre une introduction pratique à la programmation des microcontrôleurs et à la manipulation des entrées et sorties (GPIO - General Purpose Input/Output).
+\section{L'objectif de TP:}
+Dans cette expérience, nous allons explorer comment configurer les broches d'entrée/sortie du microcontrôleur à l'aide de Keil, surveiller l'état des boutons-poussoirs et réagir en conséquence pour contrôler l'état de la LED. Nous allons également examiner comment utiliser les fonctionnalités de débogage de Keil pour diagnostiquer les problèmes potentiels et assurer le bon fonctionnement du projet.
+
+\section{Diagram STM32F103xx:}
+Le diagramme bloc de la ligne de performances STM32F103xx est une représentation visuelle de l'architecture interne du microcontrôleur STM32F103xx, mettant en évidence les principaux blocs fonctionnels qui le composent et leur interconnexion.\\
+\textbf{1-Cœur Cortex-M3 }
+
+Le cœur Cortex-M3 est le processeur principal du microcontrôleur STM32F103xx. Il est basé sur l'architecture ARM Cortex-M3 et est responsable de l'exécution du code applicatif, du traitement des interruptions et de la gestion des tâches.\\
+\textbf{2-Mémoire Flash :}
+
+La mémoire flash est utilisée pour stocker le programme applicatif (le code) qui sera exécuté par le microcontrôleur. Le STM32F103xx dispose de différentes options de mémoire flash en fonction de la variante choisie, allant de 64 Ko à 512 Ko.\\
+\textbf{3-Mémoire RAM :}
+
+La mémoire RAM est utilisée pour le stockage temporaire des données et des variables pendant l'exécution du programme. La quantité de RAM disponible varie également en fonction de la variante du STM32F103xx.
+
+Unité de contrôle d'horloge (RCC - Reset and Set).\\
+\textbf{4-Clock Control:}
+Cette unité est responsable de la génération des signaux d'horloge nécessaires au fonctionnement du microcontrôleur et de ses périphériques. Elle permet de configurer la fréquence d'horloge du processeur, des bus et des périphériques.\\
+\textbf{5-Périphériques de communication :}
+
+Le STM32F103xx est équipé de divers périphériques de communication, tels que les interfaces USART, SPI, I2C et CAN, qui permettent au microcontrôleur de communiquer avec d'autres périphériques ou systèmes.\\
+\textbf{6-Périphériques d'entrée/sortie (GPIO - General Purpose Input/Output) :}
+
+Les broches GPIO fournissent des interfaces d'entrée/sortie permettant au microcontrôleur de se connecter à des composants externes tels que des capteurs, des actionneurs et des périphériques d'interface utilisateur.\\
+\textbf{7-Temporisateur (Timer) :}
+
+Le STM32F103xx est équipé de plusieurs temporisateurs, également appelés compteurs, qui peuvent être utilisés pour générer des signaux d'horloge, mesurer des intervalles de temps, ou déclencher des interruptions à des intervalles précis.\\
+\textbf{8-Convertisseurs analogique-numérique (ADC) et numérique-analogique (DAC) :}
+
+Ces blocs permettent au microcontrôleur de convertir des signaux analogiques en données numériques (ADC) et vice versa (DAC). Ils sont utiles pour interfacer le microcontrôleur avec des capteurs analogiques et des périphériques de sortie analogique.\\
+\textbf{9-Contrôleur de gestion de l'énergie :}
+
+Ce bloc est chargé de la gestion de la consommation d'énergie du microcontrôleur. Il peut inclure des fonctionnalités telles que la gestion des modes de faible consommation et la régulation de la tension d'alimentation.\\
+\textbf{10-Interfaces de débogage et de programmation :}
+
+Le STM32F103xx dispose d'interfaces de débogage et de programmation, telles que JTAG et SWD, qui permettent aux développeurs de télécharger le code sur le microcontrôleur et de déboguer leur application en temps réel.
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=18cm]{c0.png}
+    \caption{block diagram}\cite{bianchini2022analisi}
+    \label{fig:enter-label}
+\end{figure}
+\newpage
+\section{Les références manuelles}
+\subsection{Port Configuration Register Low (GPIOx CRL):}
+Le registre de configuration des ports bas (GPIOx-CRL) est un registre couramment trouvé dans les microcontrôleurs, en particulier ceux avec des broches GPIO (Entrée/Sortie à Usage Général).
+GPIOx-CRL est un registre de 32 bits pour un port GPIO avec 8 broches (0 à 7), pour les broches basses, constate que chaque section de 4 bits dans le registre correspond à la configuration d'une broche. 
+Typiquement, chaque broche sur le port GPIO correspond à un bit spécifique ou à un groupe de bits dans le registre GPIOx-CRL. En définissant ou en effaçant ces bits, vous pouvez configurer le mode de la broche (entrée, sortie, fonction alternative ou analogique), la vitesse et la configuration (pull-up, pull-down ou flottante).
+ \begin{figure} [H]
+    \centering
+   \includegraphics[width=18cm]{c1.png}
+    \caption{GPIO-CRL}\cite{boviandra2021rancang}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\subsection{Port Configuration Register High (GPIOx CRH)}
+Le Registre de Configuration des Ports Hauts (GPIOx CRH) est un autre registre couramment utilisé dans les microcontrôleurs pour configurer les broches d'un port GPIO.Ce registre permet de définir les modes de fonctionnement (entrée, sortie, fonction alternative ou analogique), la vitesse de la broche, ainsi que les configurations de pull-up, pull-down ou flottante pour chaque broche du port supérieur.
+GPIOx CRHest un registre de 32 bits pour un port GPIO avec 8 broches (0 à 7).La structure et les options de configuration du GPIOx CRH sont similaires à celles du GPIOx CRL, mais elles s'appliquent aux broches supérieures du port GPIO. 
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=18cm]{c2.png}
+    \caption{GPIO-CRH}\cite{gay2018stm32f103c8t6}
+    \label{fig:enter-label}
+\end{figure}
+\subsection{Port Input Data Register (GPIOx IDR)}
+Ce registre est principalement utilisé lorsque vous devez lire l'état des broches GPIO configurées en tant qu'entrées, par exemple pour lire des signaux provenant de capteurs, d'interrupteurs ou d'autres périphériques externes connectés aux broches d'entrée du microcontrôleur.
+La lecture du GPIOx IDR permet au microcontrôleur de récupérer rapidement l'état de multiples broches en une seule opération de lecture de registre, ce qui est efficace pour la surveillance d'état en temps réel ou la détection d'événements externes.
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=18cm]{c3.png}
+    \caption{GPIO-IDR}\cite{gay2018stm32f103c8t6}
+    \label{fig:enter-label}
+\end{figure}
+\subsection{Port Bit Set/Reset Register (GPIOx BSRR)}
+Le registre GPIO BSRR est utilisé pour manipuler les broches GPIO dans les ports d'E/S (Entrée/Sortie) du STM32F103C8.Une fois que les broches GPIO sont correctement configurées, vous pouvez utiliser le registre GPIO BSRR pour définir ou réinitialiser des broches individuelles.
+-Pour définir une broche à haut niveau (logique 1), vous écrivez un '1' sur le bit correspondant à cette broche dans les 16 bits de poids faible du registre GPI BSRR.\\
+-Pour réinitialiser une broche à bas niveau (logique 0), vous écrivez un '1' sur le bit correspondant à cette broche dans les 16 bits de poids fort du registre GPIO BSRR.
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=15cm]{c5.png}
+    \caption{GPIO-BSRR}\cite{zhang2020control}
+    \label{fig:enter-label}
+\end{figure}
+
+\section{programme sur KEIL}
+\textbf{1-Fonction Timefunction(int temps):}
+Cette fonction est une fonction de temporisation qui attend un certain nombre de "cycles". Les boucles for imbriquées dans cette fonction sont utilisées pour créer une attente approximative. La variable temps détermine le nombre de fois que cette boucle est exécutée, ce qui contrôle la durée d'attente. Cependant, cette méthode n'est pas précise pour des durées spécifiques et peut varier en fonction de plusieurs facteurs comme la fréquence d'horloge du microcontrôleur.
+
+\textbf{2-Fonction main():}\\
+-Active l'horloge pour les ports GPIOA et GPIOC (RCC->APB2ENR |= 0x00000014;).\\
+-Configure la broche 13 (PC13) en mode sortie avec une vitesse maximale de 10MHz (GPIOC->CRH = (GPIOC->CRH & 0xFF0FFFFF) | 0x00300000;).\\
+-Configure les broches 14 et 15 (PA14 et PA15) en mode entrée avec Floating input (GPIOA->CRH = (GPIOA->CRH & 0x0FFFFFFF) | 0x80000000;).\\
+\textbf{3-Boucle principale (while(1)) :}\\
+-Vérifie si PA15 est à l'état bas (appui sur un bouton connecté à PA15). Si c'est le cas, passe à l'étape suivante.\\
+-Allume la LED (PC13) en écrivant un 1 dans le 13e bit du registre BSRR de GPIOC (GPIOC->BSRR = 0x00002000;).\\
+-Appelle Timefunction(1) pour attendre environ 5 secondes (cette temporisation est approximative).\\
+-Éteint la LED (PC13) en écrivant un 1 dans le 29e bit du registre BSRR de GPIOC (GPIOC->BSRR = 0x20000000;).\\
+-Appelle Timefunction(3) pour attendre environ 10 secondes.\\
+
+
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=20cm]{c7.png}
+    \caption{Programme sur Keil}
+    \label{fig:enter-label}
+\end{figure}
+\section{Circuit de simulation}
+Voila le circuit qui permet de clignotement d’une LED en utilisant boutons-poussoir.Comme  on a dit déjà quand on appuyé sur le bouton la LED va allume pendant 5 seconds et l'éteindre automatiquement pendant 10 seconds
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=15cm]{c8.png}
+    \caption{Circuit de simulation}
+    \label{fig:enter-label}
+\end{figure}
+\textbf{Débogage :}
+
+ Les fonctionnalités de débogage de Proteus permettent de  vérifier le comportement du code à différentes étapes de son exécution, aussi la surveillance  des valeurs des registres GPIO pour voir quand les sorties sont modifiées.\\
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=15cm]{c10.png}
+    \caption{Débogage de PIN 15}
+    \label{fig:enter-label}
+\end{figure}
+
+\textbf{Résultats attendus sur l'oscilloscope :}\\
+ -Pour la broche PA15 : voir un changement de niveau logique lorsque le bouton est enfoncé et relâché. Lorsque le bouton est enfoncé, le niveau logique devrait être bas (0) et quand il est relâché, le niveau logique devrait être haut (1).\\
+-Pour la broche PC13 :  voir un changement de niveau logique lorsque la LED est allumée ou éteinte. Lorsque la LED est allumée, le niveau logique devrait être bas (0) et quand elle est éteinte, le niveau logique devrait être haut (1).\\
+-Utilisez les fonctionnalités de mesure de l'oscilloscope pour vérifier les périodes d'allumage et d'extinction de la LED, ainsi que les intervalles de temps entre ces événements.
+
+\begin{figure} [H]
+    \centering
+   \includegraphics[width=15cm]{c9.png}
+    \caption{resultat sur l'oscilloscope}
+    \label{fig:enter-label}
+\end{figure}
+On a comparé les temps observés sur l'oscilloscope avec les délais attendus dans le code (Timefunction(1) pour environ 5 secondes et Timefunction(3) pour environ 10 secondes). Note que ces temporisations peuvent ne pas être très précises en raison de l'implémentation basée sur des boucles dans la fonction Timefunction.\\
+-Utilisez les fonctionnalités de débogage de Proteus pour vérifier le comportement du code à différentes étapes de son exécution. Vous pouvez surveiller les valeurs des registres GPIO pour voir quand les sorties sont modifiées.
+\section{Conclusion :}
+Clignoter une LED en utilisant des boutons-poussoirs est un projet courant dans le domaine de l'embarqué, et le logiciel ARM Keil est une plateforme de développement largement utilisée pour programmer des microcontrôleurs ARM.
+
+En utilisant ARM Keil, vous pouvez facilement configurer les broches GPIO pour contrôler la LED et lire l'état des boutons-poussoirs. Ensuite, vous pouvez mettre en place une boucle principale qui surveille l'état des boutons-poussoirs et réagit en conséquence pour allumer ou éteindre la LED.
+
+Une approche typique implique d'utiliser une temporisation pour éviter les rebonds des boutons-poussoirs et assurer une réponse stable. De plus, vous pouvez utiliser des techniques de débogage fournies par ARM Keil pour vérifier le comportement de votre code et diagnostiquer les problèmes éventuels.
+
+En conclusion, clignoter une LED en utilisant des boutons-poussoirs avec ARM Keil est un projet réalisable et éducatif qui vous permet d'explorer les fonctionnalités des microcontrôleurs ARM et de développer vos compétences en programmation embarquée.
+
+
+
+
+
+\newpage
+\printbibliography
+
+
+
+
+
+\end{document}
